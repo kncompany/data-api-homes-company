@@ -1,0 +1,9 @@
+### 토지매매실거래
+GET http://localhost:8015/realdeal/land-sale?pnu=4165010600101050002&radius=500&year=2023
+
+### 공시지가
+GET http://localhost:8015/land/notice-price?pnu=2871037022109430000&radius=500&year=2008
+
+### 오피스텔임대실거래
+GET http://localhost:8015/realdeal/officetel-rent?pnu=1165010800113370021&radius=500&year=2023
+

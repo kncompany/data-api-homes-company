@@ -1,0 +1,8 @@
+services:
+  server:
+    restart: unless-stopped
+    build: .
+    environment:
+      SQLALCHEMY_DATABASE_URL: ${SQLALCHEMY_DATABASE_URL}
+    ports:
+      - "8015:8000"

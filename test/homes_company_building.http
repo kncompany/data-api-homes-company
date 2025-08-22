@@ -15,7 +15,6 @@ GET http://localhost:8015/building-document/sub-land-number/pnu?value=4159025627
 
 ### 부속지번 건물대장관리번호
 GET http://localhost:8015/building-document/sub-land-number/building_document_management_number?value=11241100725595
-Authorization: Bearer your_token_here
 
 ### 부속지번 부속토지고유번호
 GET http://localhost:8015/building-document/sub-land-number/sub_pnu?value=4159025627107490018
@@ -33,7 +32,7 @@ GET http://localhost:8015/building-document/aggregate-title-part/gppk?value=1003
 GET http://localhost:8015/building-document/floor-overview/address?value=을지로5가 19-19번지
 
 ### 층별개요 토지고유번호
-GET http://localhost:8015/building-document/floor-overview/pnu?value=1111018300101080000
+GET http://localhost:8015/building-document/floor-overview/pnu?value=1174010300102880002
 
 ### 층별개요 표제건물대장관리번호
 GET http://localhost:8015/building-document/floor-overview/ppk?value=10211100186116

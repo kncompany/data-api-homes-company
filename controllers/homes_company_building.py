@@ -97,7 +97,7 @@ async def building_document_sub_land_number_management_number(
     db=Depends(get_db),
 ):
     try:
-        result = await req_data(db, models.TbSubLandNumber, "buildingDocumentManagementNumber", value)
+        result = await req_data(db, models.TbSubLandNumber, "building_document_management_number", value)
         return ORJSONResponse(result)
     except Exception as e:
         logger.error(f"Exception error: {e}")
@@ -112,7 +112,7 @@ async def building_document_sub_land_number_sub_pnu(
     db=Depends(get_db),
 ):
     try:
-        result = await req_data(db, models.TbSubLandNumber, "subPnu", value)
+        result = await req_data(db, models.TbSubLandNumber, "sub_pnu", value)
         return ORJSONResponse(result)
     except Exception as e:
         logger.error(f"Exception error: {e}")
@@ -217,7 +217,7 @@ async def building_document_basic_overview_upper_management_number(
     db=Depends(get_db),
 ):
     try:
-        result = await req_data(db, models.TbBasicOverview, "buildingDocumentManagementNumber", value)
+        result = await req_data(db, models.TbBasicOverview, "building_document_upper_management_number", value)
         return ORJSONResponse(result)
     except Exception as e:
         logger.error(f"Exception error: {e}")

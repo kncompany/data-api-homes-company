@@ -3,7 +3,7 @@ from config.config import config
 
 engine = create_async_engine(
     config.sqlalchemy_database_url,
-    echo=True,          # SQL 쿼리 로그 비활성화 (성능 최적화)
+    echo=False,          # SQL 쿼리 로그 비활성화 (성능 최적화)
     pool_size=100,        # 기본 연결 풀 크기 (동시 접속 가능한 DB 연결 수)
     max_overflow=300,     # 초과 연결 허용 개수 (추가로 허용할 최대 연결 수)
     pool_timeout=30,     # 연결 대기 시간 (초) (기본값: 30초)

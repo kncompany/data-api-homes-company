@@ -67,9 +67,14 @@ async def req_data_pnu(
 
         result_data = await db.execute(stmt, params)
         results = result_data.fetchall()
+
         column_names = result_data.keys()
         response = {
-            "data": [dict(zip(column_names, row)) for row in results]
+            "data": [
+                {''.join([word if i == 0 else word.capitalize() for i, word in enumerate(key.split('_'))]): value
+                 for key, value in zip(column_names, row)}
+                for row in results
+            ]
         }
         return response
     except SQLAlchemyError as e:

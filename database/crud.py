@@ -145,38 +145,33 @@ async def req_data_realdeal(
         year: str,
 ):
     try:
-        near_pnu_cte = text(f"SELECT pnu FROM {config.sqlalchemy_schema_url}.fn_get_near_pnu(:pnu, :radius)")
+        # 테이블명 결정
+        table_name = table_info.__tablename__
+        schema = config.sqlalchemy_schema_url
+        # 쿼리 조건 분기
+        if gubun == "land-sale":
+            year_cond = f"WHERE a.contract_date LIKE '{year}%'" if year else ""
+        elif gubun == "notice-price":
+            year_cond = f"WHERE a.notice_standard_year = '{year}'" if year else ""
+        elif gubun == "officetel-rent":
+            year_cond = f"WHERE a.contract_date LIKE '{year}%'" if year else ""
+        else:
+            year_cond = ""
+        # 쿼리 생성
+        query = (
+            f"WITH step1 AS (SELECT pnu FROM {schema}.fn_get_near_pnu(:pnu, :radius)) "
+            f"SELECT a.* FROM {schema}.{table_name} AS a "
+            f"INNER JOIN step1 AS b ON a.pnu = b.pnu "
+            f"{year_cond}"
+        )
         params = {"pnu": pnu, "radius": int(radius)}
-        filters = [
-            table_info.pnu.in_(
-                select(text("pnu")).select_from(text(f"({near_pnu_cte}) AS near_pnu"))
-            )
+        result_data = await db.execute(text(query), params)
+        results = result_data.fetchall()
+        data = [
+            {to_camel_case(key): val for key, val in dict(row._mapping).items()}
+            for row in results
         ]
-
-        if year:
-            if gubun in ["land-sale", "officetel-rent"]:
-                filters.append(table_info.contractDate.like(f"{year}%"))
-            elif gubun == "notice-price":
-                filters.append(table_info.noticeStandardYear == year)
-
-        stmt = select(table_info).where(*filters).distinct()
-        result_data = await db.execute(stmt, params)
-        results = result_data.scalars().all()
-        
-        # 중복 제거를 위한 집합 사용
-        seen_records = set()
-        unique_data = []
-        
-        for obj in results:
-            # 고유 식별자 생성 (모든 필드 값의 해시)
-            record_dict = {to_camel_case(key): value for key, value in obj.__dict__.items() if not key.startswith('_')}
-            record_key = str(sorted(record_dict.items()))
-            
-            if record_key not in seen_records:
-                seen_records.add(record_key)
-                unique_data.append(record_dict)
-        
-        return {"data": jsonable_encoder(unique_data)}
+        return {"data": jsonable_encoder(data)}
     except SQLAlchemyError as e:
         logger.error(f"SQLAlchemy error: {e}")
         logger.error(traceback.format_exc())

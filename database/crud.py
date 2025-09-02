@@ -1,12 +1,10 @@
 import traceback
-import decimal
 from sqlalchemy.exc import SQLAlchemyError
 from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select, text
 from config.logging_config import logger
 from config.config import config
-from typing import Any, Dict, List
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -141,7 +139,7 @@ async def req_data_realdeal(
         table_info,
         gubun: str,
         pnu: str,
-        radius: str,
+        radius: int,
         year: str,
 ):
     try:
@@ -164,7 +162,7 @@ async def req_data_realdeal(
             f"INNER JOIN step1 AS b ON a.pnu = b.pnu "
             f"{year_cond}"
         )
-        params = {"pnu": pnu, "radius": int(radius)}
+        params = {"pnu": pnu, "radius": radius}
         result_data = await db.execute(text(query), params)
         results = result_data.fetchall()
         data = [
@@ -177,6 +175,104 @@ async def req_data_realdeal(
         logger.error(traceback.format_exc())
         raise HTTPException(status_code=500, detail=[{"msg": str(e)}])
     except Exception as e:
+        logger.error(f"Exception error: {e}")
+        logger.error(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=[{"msg": str(e)}])
+
+async def req_data_realdeal_page(
+        db: AsyncSession,
+        table_info,
+        gubun: str,
+        page: int,
+        size: int,
+        pnu: str,
+        radius: int,
+        year: str,
+):
+    try:
+        # 테이블 이름과 스키마 정보 가져오기
+        table_name = table_info.__tablename__
+        schema = config.sqlalchemy_schema_url
+
+        # 거래 구분(gubun)에 따라 연도 조건(year_cond) 생성
+        if gubun == "land-sale":
+            # 토지 매매일 경우 계약일 기준 연도 조건
+            year_cond = f"WHERE a.contract_date LIKE '{year}%'" if year else ""
+        elif gubun == "notice-price":
+            # 공시지가일 경우 공시 기준 연도 조건
+            year_cond = f"WHERE a.notice_standard_year = '{year}'" if year else ""
+        elif gubun == "officetel-rent":
+            # 오피스텔 임대일 경우 계약일 기준 연도 조건
+            year_cond = f"WHERE a.contract_date LIKE '{year}%'" if year else ""
+        else:
+            # 조건이 없을 경우 빈 문자열
+            year_cond = ""
+
+        # 전체 데이터 개수 조회 쿼리 생성
+        count_query = (
+            f"WITH step1 AS (SELECT pnu FROM {schema}.fn_get_near_pnu(:pnu, :radius)) "
+            f"SELECT COUNT(*) FROM {schema}.{table_name} AS a "
+            f"INNER JOIN step1 AS b ON a.pnu = b.pnu "
+            f"{year_cond}"
+        )
+        params = {"pnu": pnu, "radius": radius}
+        # 전체 데이터 개수 조회 실행
+        result_count = await db.execute(text(count_query), params)
+        total_count = result_count.scalar() or 0
+
+        # 페이지네이션을 위한 offset 계산
+        offset = (page - 1) * size
+
+        # 실제 데이터 조회 쿼리 생성 (LIMIT, OFFSET 적용)
+        data_query = (
+            f"WITH step1 AS (SELECT pnu FROM {schema}.fn_get_near_pnu(:pnu, :radius)) "
+            f"SELECT a.* FROM {schema}.{table_name} AS a "
+            f"INNER JOIN step1 AS b ON a.pnu = b.pnu "
+            f"{year_cond} "
+            f"ORDER BY a.pnu "
+            f"LIMIT :size OFFSET :offset"
+        )
+        params_data = {"pnu": pnu, "radius": int(radius), "size": size, "offset": offset}
+        # 데이터 조회 실행
+        result_data = await db.execute(text(data_query), params_data)
+        results = result_data.fetchall()
+
+        # 조회된 결과를 camelCase로 변환하여 리스트로 저장
+        data = [
+            {to_camel_case(key): val for key, val in dict(row._mapping).items()}
+            for row in results
+        ]
+
+        # 메타 정보 계산
+        total_page = (total_count + size - 1) // size if size > 0 else 0  # 전체 페이지 수
+        current_count = len(data)  # 현재 페이지 데이터 개수
+        has_next_page = page < total_page  # 다음 페이지 존재 여부
+        has_prev_page = page > 1  # 이전 페이지 존재 여부
+        start_index = offset + 1 if current_count > 0 else 0  # 현재 페이지 시작 인덱스
+        end_index = offset + current_count if current_count > 0 else 0  # 현재 페이지 끝 인덱스
+
+        # 메타 정보 딕셔너리 생성
+        meta = {
+            "currentPage": page,
+            "pageSize": size,
+            "currentCount": current_count,
+            "totalPage": total_page,
+            "totalCount": total_count,
+            "hasNextPage": has_next_page,
+            "hasPrevPage": has_prev_page,
+            "startIndex": start_index,
+            "endIndex": end_index
+        }
+
+        # 결과 반환 (메타 정보와 데이터)
+        return {"meta": meta, "data": jsonable_encoder(data)}
+    except SQLAlchemyError as e:
+        # SQLAlchemy 관련 에러 처리 및 로그 기록
+        logger.error(f"SQLAlchemy error: {e}")
+        logger.error(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=[{"msg": str(e)}])
+    except Exception as e:
+        # 기타 예외 처리 및 로그 기록
         logger.error(f"Exception error: {e}")
         logger.error(traceback.format_exc())
         raise HTTPException(status_code=500, detail=[{"msg": str(e)}])

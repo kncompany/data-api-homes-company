@@ -1,20 +1,22 @@
+@Host = http://devapi.bigvalue.co.kr/api
+
 ### 토지특성 지번주소
-GET http://localhost:8015/land/feature/address?value=을지로5가 19-19번지
+GET {{Host}}/land/feature/address?value=을지로5가 19-19번지
 
 ### 토지특성 토지고유번호
-GET http://localhost:8015/land/feature/pnu?value=1111010100100020002
+GET {{Host}}/land/feature/pnu?value=1111010100100020002
 
 ### pnu변환 지번주소
-GET http://localhost:8015/land/pnu/address?value=을지로5가 19-19번지
+GET {{Host}}/land/pnu/address?value=을지로5가 19-19번지
 
 ### 토지이용계획 지번주소
-GET http://localhost:8015/land/use/address?value=을지로5가 19-19번지
+GET {{Host}}/land/use/address?value=을지로5가 19-19번지
 
 ### 토지이용계획 토지고유번호
-GET http://localhost:8015/land/use/pnu?value=1111018300101080000
+GET {{Host}}/land/use/pnu?value=1111018300101080000
 
 ### 지적도형 지번주소
-GET http://localhost:8015/land/geometry/address?value=을지로5가 19-19번지
+GET {{Host}}/land/geometry/address?value=을지로5가 19-19번지
 
 ### 지적도형 토지고유번호
-GET http://localhost:8015/land/geometry/pnu?value=1111018300101080000
+GET {{Host}}/land/geometry/pnu?value=1111018300101080000

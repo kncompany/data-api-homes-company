@@ -1,54 +1,57 @@
+@Host = http://devapi.bigvalue.co.kr/api
+
+
 ### 표제부 지번주소
-GET http://localhost:8015/building-document/title-part/address?value=서울특별시 종로구 평창동 108번지
+GET {{Host}}/building-document/title-part/address?value=서울특별시 종로구 숭인동 59-45번지
 
 ### 표제부 토지고유번호
-GET http://localhost:8015/building-document/title-part/pnu?value=1111018300101080000
+GET {{Host}}/building-document/title-part/pnu?value=1111018300101080000
 
 ### 표제부 표제건물대장관리번호
-GET http://localhost:8015/building-document/title-part/ppk?value=10211100186116
+GET {{Host}}/building-document/title-part/ppk?value=10211100186116
 
 ### 부속지번 지번주소
-GET http://localhost:8015/building-document/sub-land-number/address?value=주곡리 746-10번지
+GET {{Host}}/building-document/sub-land-number/address?value=주곡리 746-10번지
 
 ### 부속지번 토지고유번호
-GET http://localhost:8015/building-document/sub-land-number/pnu?value=4159025627107460010
+GET {{Host}}/building-document/sub-land-number/pnu?value=4159025627107460010
 
 ### 부속지번 건물대장관리번호
-GET http://localhost:8015/building-document/sub-land-number/building_document_management_number?value=11241100725595
+GET {{Host}}/building-document/sub-land-number/building_document_management_number?value=11241100725595
 
 ### 부속지번 부속토지고유번호
-GET http://localhost:8015/building-document/sub-land-number/sub_pnu?value=4159025627107490018
+GET {{Host}}/building-document/sub-land-number/sub_pnu?value=4159025627107490018
 
 ### 총괄표제부 지번주소
-GET http://localhost:8015/building-document/aggregate-title-part/address?value=을지로5가 19-19번지
+GET {{Host}}/building-document/aggregate-title-part/address?value=을지로5가 19-19번지
 
 ### 총괄표제부 토지고유번호
-GET http://localhost:8015/building-document/aggregate-title-part/pnu?value=1114015100100190019
+GET {{Host}}/building-document/aggregate-title-part/pnu?value=1114015100100190019
 
 ### 총괄표제부 총괄표제건물대장관리번호
-GET http://localhost:8015/building-document/aggregate-title-part/gppk?value=10031161
+GET {{Host}}/building-document/aggregate-title-part/gppk?value=10031161
 
 ### 층별개요 지번주소
-GET http://localhost:8015/building-document/floor-overview/address?value=을지로5가 19-19번지
+GET {{Host}}/building-document/floor-overview/address?value=을지로5가 19-19번지
 
 ### 층별개요 토지고유번호
-GET http://localhost:8015/building-document/floor-overview/pnu?value=1174010300102880002
+GET {{Host}}/building-document/floor-overview/pnu?value=1174010300102880002
 
 ### 층별개요 표제건물대장관리번호
-GET http://localhost:8015/building-document/floor-overview/ppk?value=10211100186116
+GET {{Host}}/building-document/floor-overview/ppk?value=10211100186116
 
 ### 기본개요 건물대장상위관리번호
-GET http://localhost:8015/building-document/basic-overview/building_document_upper_management_number?value=1002120
+GET {{Host}}/building-document/basic-overview/building_document_upper_management_number?value=1002120
 
 ### 전유부 지번주소
-GET http://localhost:8015/building-document/private-part/address?value=송도동 29-8번지
+GET {{Host}}/building-document/private-part/address?value=송도동 29-8번지
 
 ### 전유부 토지고유번호
-GET http://localhost:8015/building-document/private-part/pnu?value=1111018300101080000
+GET {{Host}}/building-document/private-part/pnu?value=1111018300101080000
 
 ### 전유부 전유건물대장관리번호
-GET http://localhost:8015/building-document/private-part/jpk?value=1000000000000000000813
+GET {{Host}}/building-document/private-part/jpk?value=1000000000000000000813
 
 ### 전유부 표제건물대장관리번호
-GET http://localhost:8015/building-document/private-part/ppk?value=10211100186116
+GET {{Host}}/building-document/private-part/ppk?value=10211100186116
 

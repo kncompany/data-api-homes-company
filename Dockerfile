@@ -13,4 +13,4 @@ RUN pip3 install --no-cache-dir -r ./requirements.txt
 COPY . ./
 
 # start command
-CMD ["gunicorn", "main:app", "--workers", "3", "--bind", "0.0.0.0:8000", "--worker-class", "uvicorn.workers.UvicornWorker"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

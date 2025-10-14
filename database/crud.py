@@ -21,7 +21,7 @@ async def req_data(
 ):
     try:
         stmt = text(
-            f"SELECT * FROM {settings.sqlalchemy_schema_url}.{table_info.__tablename__} WHERE {param} = :value")
+            f"SELECT * FROM {settings.SQLALCHEMY_SCHEMA_URL}.{table_info.__tablename__} WHERE {param} = :value")
         params = {"value": value}
         result_data = await db.execute(stmt, params)
         results = result_data.fetchall()
@@ -57,8 +57,8 @@ async def req_data_pnu(
     try:
         if param == "address":
             stmt = text(
-                f"with step1 as (select pnu from {settings}.fn_pnu_from_address(:address)) "
-                f"select b.* from step1 as a cross join lateral {settings}.fn_land_geometry(a.pnu) as b"
+                f"with step1 as (select pnu from {settings.SQLALCHEMY_SCHEMA_URL}.fn_pnu_from_address(:address)) "
+                f"select b.* from step1 as a cross join lateral {settings.SQLALCHEMY_SCHEMA_URL}.fn_land_geometry(a.pnu) as b"
             )
             params = {"address": value}
             result_data = await db.execute(stmt, params)
@@ -68,7 +68,7 @@ async def req_data_pnu(
                 for row in results
             ]
         else:
-            stmt = text(f"SELECT * FROM {settings}.fn_land_geometry(:pnu)")
+            stmt = text(f"SELECT * FROM {settings.SQLALCHEMY_SCHEMA_URL}.fn_land_geometry(:pnu)")
             params = {"pnu": value}
             result_data = await db.execute(stmt, params)
             results = result_data.fetchall()
@@ -98,8 +98,8 @@ async def req_data_address(
         if table_info:
             stmt = text(
                 f"SELECT a.* "
-                f"FROM {settings}.{table_info.__tablename__} as a "
-                f"CROSS JOIN LATERAL {settings}.fn_pnu_from_address(:address) as b "
+                f"FROM {settings.SQLALCHEMY_SCHEMA_URL}.{table_info.__tablename__} as a "
+                f"CROSS JOIN LATERAL {settings.SQLALCHEMY_SCHEMA_URL}.fn_pnu_from_address(:address) as b "
                 f"WHERE a.pnu = b.pnu"
             )
             result_data = await db.execute(stmt, {"address": value})
@@ -109,7 +109,7 @@ async def req_data_address(
                 for row in results
             ]
         else:
-            stmt_pnu = text(f"SELECT {settings}.fn_pnu_from_address(:address) AS pnu")
+            stmt_pnu = text(f"SELECT {settings.SQLALCHEMY_SCHEMA_URL}.fn_pnu_from_address(:address) AS pnu")
             result_pnu = await db.execute(stmt_pnu, {"address": value})
             pnu_rows = result_pnu.fetchall()
             data = []
@@ -145,7 +145,7 @@ async def req_data_realdeal(
     try:
         # 테이블명 결정
         table_name = table_info.__tablename__
-        schema = settings
+        schema = settings.SQLALCHEMY_SCHEMA_URL
         # 쿼리 조건 분기
         if gubun == "land-sale":
             year_cond = f"WHERE a.contract_date LIKE '{year}%'" if year else ""
@@ -192,7 +192,7 @@ async def req_data_realdeal_page(
     try:
         # 테이블 이름과 스키마 정보 가져오기
         table_name = table_info.__tablename__
-        schema = settings
+        schema = settings.SQLALCHEMY_SCHEMA_URL
 
         # 거래 구분(gubun)에 따라 연도 조건(year_cond) 생성
         if gubun == "land-sale":

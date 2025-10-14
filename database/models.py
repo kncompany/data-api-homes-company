@@ -1,10 +1,10 @@
 from sqlalchemy import Column, String, CHAR, Numeric
 from sqlalchemy.ext.declarative import declarative_base
-from config.config import config
+from settings import settings
 
 
 BaseTable = declarative_base()
-BaseTable.metadata.schema = config.sqlalchemy_schema_url
+BaseTable.metadata.schema = settings.SQLALCHEMY_SCHEMA_URL
 
 
 # 표제부

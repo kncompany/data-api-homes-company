@@ -1,0 +1,6 @@
+services:
+  server:
+    environment:
+      - ENV=dev
+    volumes:
+      - .env.dev:/app/.env.dev:ro

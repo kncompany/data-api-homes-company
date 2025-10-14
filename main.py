@@ -1,7 +1,6 @@
 # main.py
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
-from middlewares import log_middleware
 from controllers import homes_company_building, homes_company_land, homes_company_realdeal
 
 app = FastAPI()
@@ -13,8 +12,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-log_middleware.add(app)
 
 # 라우터 직접 등록 (간결화)
 app.include_router(homes_company_building.router)

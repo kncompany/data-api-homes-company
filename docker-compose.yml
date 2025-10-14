@@ -3,6 +3,6 @@ services:
     restart: unless-stopped
     build: .
     environment:
-      SQLALCHEMY_DATABASE_URL: ${SQLALCHEMY_DATABASE_URL}
+      - ENV=local
     ports:
       - "8015:8000"
